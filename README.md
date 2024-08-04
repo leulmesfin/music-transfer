@@ -1,4 +1,7 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This project is developed with React, TypeScript, HTML, CSS, and Java Springboot for the Rest API. Mantine is also used for some UI components.
+Influences: "https://www.youtube.com/watch?v=mS2J0dKcvAA&t=40s"
+
 
 ## Getting Started
 
