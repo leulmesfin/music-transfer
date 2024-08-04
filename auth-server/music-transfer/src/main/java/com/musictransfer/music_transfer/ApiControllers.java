@@ -14,8 +14,11 @@ import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
+import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPlaylistsRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -59,13 +62,27 @@ public class ApiControllers {
         System.out.println("Error: " + e.getMessage());
       }
 
-      response.sendRedirect("http://localhost:8080/api/top-artists");
+      response.sendRedirect("http://localhost:8080/api/get-playlists");
       return spotifyApi.getAccessToken();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping(value = "top-artists")
-    public String getArtists() {
-      return "Hey Artist";
+    @GetMapping(value = "get-playlists")
+    public PlaylistSimplified[] getPlaylists() {
+
+      final GetListOfCurrentUsersPlaylistsRequest getListOfCurrentUsersPlaylistsRequest = spotifyApi
+          .getListOfCurrentUsersPlaylists()
+          .limit(10)
+          .offset(0)
+          .build();
+
+      try {
+        final Paging<PlaylistSimplified> playlistSimplifiedPaging = getListOfCurrentUsersPlaylistsRequest.execute();
+
+        return playlistSimplifiedPaging.getItems(); // spotify api request succeeded, return an array of PlaylistSimplified objects
+      } catch (IOException | SpotifyWebApiException | org.apache.hc.core5.http.ParseException e) {
+        System.out.println("Error: " + e.getMessage());
+      }
+      return new PlaylistSimplified[0]; // spotify api request failed, so return an empty list
     } 
 }
